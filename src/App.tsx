@@ -1,24 +1,21 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ImageBox from './components/image-gallery/ImageBox';
+import MusicPlayer from './components/music-player/MusicPlayer';
+import TodoList from './components/todo-list/TodoList';
+import KakaoMap from './components/kakao-map/KakaoMap';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<ImageBox />} />
+          <Route path="/music" element={<MusicPlayer />} />
+          <Route path="/todo" element={<TodoList />} />
+          <Route path="/kakao" element={<KakaoMap />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
