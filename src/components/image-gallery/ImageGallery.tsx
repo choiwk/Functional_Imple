@@ -1,11 +1,25 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
 import './ImageGallery.css';
 import ImageBox from './ImageBox';
 
 function ImageGallery() {
   const [imageList, setImageList] = useState<string[]>([]);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const reader = new FileReader();
+
+  const onDrop = useCallback((acceptedFiles: any) => {
+    console.log(acceptedFiles);
+
+    if (acceptedFiles.length) {
+      for (const file of acceptedFiles) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = (event) => {
+          setImageList((prev) => [...prev, event.target?.result as string]);
+        };
+      }
+    }
+  }, []);
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   return (
     <>
@@ -19,34 +33,12 @@ function ImageGallery() {
               </p>
             </div>
           )}
-          <input
-            type="file"
-            ref={inputRef}
-            onChange={(e) => {
-              const imageRoute = e.currentTarget.files;
-
-              if (imageRoute?.[0]) {
-                const file = imageRoute[0];
-                reader.readAsDataURL(file);
-                reader.onloadend = (event) => {
-                  setImageList((prev) => [
-                    ...prev,
-                    event.target?.result as string,
-                  ]);
-                };
-              }
-            }}
-          />
           {imageList.map((el, idx) => (
-            <ImageBox key={el + idx} src={el}></ImageBox>
+            <ImageBox key={el + idx} src={el} />
           ))}
-          <div
-            className="plus-box"
-            onClick={() => {
-              inputRef.current?.click();
-            }}
-          >
-            +
+
+          <div className="plus-box" {...getRootProps()}>
+            <input {...getInputProps()} />+
           </div>
         </div>
       </div>
